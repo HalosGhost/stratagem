@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Main where
 
 import           Graphics.Vty             hiding (pad)
@@ -8,6 +6,7 @@ import           System.Exit
 import qualified Data.Text                as     T
 import           Control.Monad
 import           Data.Maybe
+import           Data.List
 
 fg = white
 bg = black
@@ -17,20 +16,30 @@ main = do lst <- newList 1
           setSelectedUnfocusedAttr lst $ Just (fgColor brightGreen)
           sel <- vLimit 4 lst
 
+          -- The title font is ANSI Shadow by Patrick Gillespie
+          -- Find more info at <https://github.com/patorjk/figlet.js>
+          let title = T.pack . intercalate "\n" $
+                    [ "███████╗████████╗██████╗  █████╗ ████████╗ █████╗  ██████╗ ███████╗███╗   ███╗"
+                    , "██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝ ██╔════╝████╗ ████║"
+                    , "███████╗   ██║   ██████╔╝███████║   ██║   ███████║██║  ███╗█████╗  ██╔████╔██║"
+                    , "╚════██║   ██║   ██╔══██╗██╔══██║   ██║   ██╔══██║██║   ██║██╔══╝  ██║╚██╔╝██║"
+                    , "███████║   ██║   ██║  ██║██║  ██║   ██║   ██║  ██║╚██████╔╝███████╗██║ ╚═╝ ██║"
+                    , "╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝"
+                    ]
+
           let items = [ ("Local PvP",  "Play against a local human"  )
                       , ("Local PvC",  "Play against your machine"   )
                       , ("Online PvP", "Play against a human online" )
                       , ("Exit",       "Exit the game"               )
                       ]
 
-          listComment <- plainText T.empty
-
           forM_ (map fst items)
                 $ \s -> addToList lst s =<< (plainText $ T.pack s)
 
+          listComment <- plainText . T.pack . snd $ items !! 0
           lst `onSelectionChange` \ev ->
               case ev of
-                   SelectionOn _ k _ -> setText listComment label
+                   SelectionOn _ k _ -> setText listComment    $ T.pack label
                                         where label = fromJust $ lookup k items
                    SelectionOff      -> return ()
 
@@ -39,13 +48,22 @@ main = do lst <- newList 1
                    "Exit" -> exitSuccess
                    _      -> return ()
 
+          tw      <- hCentered listComment
+          table   <- newTable [column ColAuto] BorderFull
+          setDefaultCellPadding table ((padLeft 1) `pad` (padRight 1))
+
+          ttext   <- plainText title
+          mt      <- plainText T.empty
+          mainBox <- (vBox mt ttext) <--> (vBox table tw) >>= withBoxSpacing 1
+
+          addRow table sel
+
           fg <- newFocusGroup
 
           addToFocusGroup fg sel
-          addToFocusGroup fg listComment
 
-          c <- newCollection
-          addToCollection c sel fg
-          addToCollection c listComment fg
+          ui <- centered =<< hLimit 78 mainBox
+          c  <- newCollection
+          addToCollection c ui fg
 
-          runUi c $ defaultContext { normalAttr = white `on` black }
+          runUi c $ defaultContext
