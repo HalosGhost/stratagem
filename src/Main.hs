@@ -6,6 +6,8 @@ import           Graphics.Vty             hiding (pad)
 import           Graphics.Vty.Widgets.All
 import           System.Exit
 import qualified Data.Text                as     T
+import           Control.Monad
+import           Data.Maybe
 
 fg = white
 bg = black
@@ -13,32 +15,37 @@ bg = black
 main :: IO ()
 main = do lst <- newList 1
           setSelectedUnfocusedAttr lst $ Just (fgColor brightGreen)
-          sel <- vLimit 5 lst
+          sel <- vLimit 4 lst
 
-          let i1 = "Local PvP"
-              i2 = "Local PvC"
-              i3 = "Online PvP"
+          let items = [ ("Local PvP",  "Play against a local human"  )
+                      , ("Local PvC",  "Play against your machine"   )
+                      , ("Online PvP", "Play against a human online" )
+                      , ("Exit",       "Exit the game"               )
+                      ]
 
           listComment <- plainText T.empty
 
-          addToList lst i1 =<< plainText i1
-          addToList lst i2 =<< plainText i2
-          addToList lst i3 =<< plainText i3
+          forM_ (map fst items)
+                $ \s -> addToList lst s =<< (plainText $ T.pack s)
 
           lst `onSelectionChange` \ev ->
               case ev of
-                   SelectionOn _ k _ -> setText listComment k
+                   SelectionOn _ k _ -> setText listComment label
+                                        where label = fromJust $ lookup k items
                    SelectionOff      -> return ()
 
+          lst `onItemActivated` \(ActivateItemEvent _ s _) ->
+              case s of
+                   "Exit" -> exitSuccess
+                   _      -> return ()
+
           fg <- newFocusGroup
-          fg `onKeyPressed` \_ k _ ->
-             case k of
-                  KChar 'Q' -> exitSuccess
-                  _         -> return False
 
           addToFocusGroup fg sel
           addToFocusGroup fg listComment
+
           c <- newCollection
           addToCollection c sel fg
           addToCollection c listComment fg
+
           runUi c $ defaultContext { normalAttr = white `on` black }
