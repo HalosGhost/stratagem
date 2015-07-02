@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances    #-}
 
-module Game.Stratagem.Piece where
+module Piece where
 
 data Rank = Empty | Flag | Spy | Scout | Miner | Sergeant
           | Lieutenant | Captain | Major | Colonel | General

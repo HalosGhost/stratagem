@@ -1,9 +1,9 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances    #-}
 
-module Game.Stratagem.Board where
+module Board where
 
-import Game.Stratagem.Piece
+import Piece
 import qualified Data.Sequence as S
 import qualified Data.List     as L
 import qualified Data.Foldable as F
