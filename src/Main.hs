@@ -45,8 +45,10 @@ main = do lst <- newList 1
 
           lst `onItemActivated` \(ActivateItemEvent _ s _) ->
               case s of
-                   "Exit" -> exitSuccess
-                   _      -> return ()
+                   "Exit"       -> exitSuccess
+                   "Local PvP"  -> return ()
+                   "Local PvC"  -> return ()
+                   "Online PvP" -> return ()
 
           tw      <- hCentered listComment
           table   <- newTable [column ColAuto] BorderFull
