@@ -3,7 +3,7 @@
 
 module Board where
 
-import Piece
+import           Piece
 import qualified Data.Sequence as S
 import qualified Data.List     as L
 import qualified Data.Foldable as F
@@ -96,16 +96,16 @@ gameOver b | hasLost Blue    = Red
                  hasNoFlag p = notElem (Piece p Flag False) pieces
                  pieces      = [b!(x,y)| x <- [0..9], y <- [0..9]]
 
-newBoard :: Board
-newBoard = S.fromList
-         [ bline, bline, bline, bline, lline, lline, bline, bline, bline, bline
-         ] where blank = Piece None Empty True
-                 lake  = Piece None Lake  True
-                 bline = S.fromList $ replicate 10 blank
-                 lline = S.fromList
-                       [ blank, blank
-                       , lake , lake
-                       , blank, blank
-                       , lake , lake
-                       , blank, blank
-                       ]
+blankBoard :: Board
+blankBoard = S.fromList
+           [ bln, bln, bln, bln, lln, lln, bln, bln, bln, bln
+           ] where blank = Piece None Empty True
+                   lake  = Piece None Lake  True
+                   bln   = S.fromList $ replicate 10 blank
+                   lln   = S.fromList
+                         [ blank, blank
+                         , lake , lake
+                         , blank, blank
+                         , lake , lake
+                         , blank, blank
+                         ]
