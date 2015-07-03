@@ -101,7 +101,7 @@ blankBoard = S.fromList
            [ bln, bln, bln, bln, lln, lln, bln, bln, bln, bln
            ] where blank = Piece None Empty True
                    lake  = Piece None Lake  True
-                   bln   = S.fromList $ replicate 10 blank
+                   bln   = S.replicate 10 blank
                    lln   = S.fromList
                          [ blank, blank
                          , lake , lake
