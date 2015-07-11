@@ -30,7 +30,6 @@ main = do -- The title font is ANSI Shadow by Patrick Gillespie
                       ]
 
           lst <- newList 1
-          setSelectedUnfocusedAttr lst $ Just (fgColor brightGreen)
           sel <- vLimit (length items) lst
 
           forM_ (map fst items)
