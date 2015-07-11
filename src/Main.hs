@@ -12,11 +12,7 @@ fg = white
 bg = black
 
 main :: IO ()
-main = do lst <- newList 1
-          setSelectedUnfocusedAttr lst $ Just (fgColor brightGreen)
-          sel <- vLimit 4 lst
-
-          -- The title font is ANSI Shadow by Patrick Gillespie
+main = do -- The title font is ANSI Shadow by Patrick Gillespie
           -- Find more info at <https://github.com/patorjk/figlet.js>
           let title = T.pack . intercalate "\n" $
                     [ "███████╗████████╗██████╗  █████╗ ████████╗ █████╗  ██████╗ ███████╗███╗   ███╗"
@@ -32,6 +28,10 @@ main = do lst <- newList 1
                       , ("Online PvP", "Play against a human online" )
                       , ("Exit",       "Exit the game"               )
                       ]
+
+          lst <- newList 1
+          setSelectedUnfocusedAttr lst $ Just (fgColor brightGreen)
+          sel <- vLimit (length items) lst
 
           forM_ (map fst items)
                 $ \s -> addToList lst s =<< (plainText $ T.pack s)
