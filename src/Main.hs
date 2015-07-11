@@ -52,7 +52,7 @@ main = do lst <- newList 1
 
           tw      <- hCentered listComment
           table   <- newTable [column ColAuto] BorderFull
-          setDefaultCellPadding table ((padLeft 1) `pad` (padRight 1))
+          setDefaultCellPadding table $ (padLeft 1) `pad` (padRight 1)
 
           ttext   <- plainText title
           mt      <- plainText T.empty
