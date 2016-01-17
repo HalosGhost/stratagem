@@ -14,7 +14,7 @@ bg = black
 main :: IO ()
 main = do -- The title font is ANSI Shadow by Patrick Gillespie
           -- Find more info at <https://github.com/patorjk/figlet.js>
-          let title = T.pack . intercalate "\n" $
+          let title = T.pack . unlines $
                     [ "███████╗████████╗██████╗  █████╗ ████████╗ █████╗  ██████╗ ███████╗███╗   ███╗"
                     , "██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝ ██╔════╝████╗ ████║"
                     , "███████╗   ██║   ██████╔╝███████║   ██║   ███████║██║  ███╗█████╗  ██╔████╔██║"
